@@ -29,6 +29,7 @@ export function LeadsViewContainer({
   profiles,
 }: LeadsViewContainerProps) {
   const [viewMode, setViewMode] = useState<"kanban" | "table">("kanban");
+  const [showInfo, setShowInfo] = useState(false);
 
   const sinRespuesta = leads.filter(
     (l) => (l.lead_status === "primer_contacto" || l.lead_status === "reiterado" || l.lead_status === "esperando_confirmacion") && (l.dias_sin_respuesta ?? 0) >= 1
@@ -36,11 +37,31 @@ export function LeadsViewContainer({
 
   return (
     <div>
-      <div className="panel-head">
-        <div>
-          <h2>Leads / Consultas</h2>
-          <span className="hint">Bandeja de entrada y re-contacto de anuncios</span>
+      <div className="panel-head" style={{ position: "relative" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <div>
+            <h2>Leads / Consultas</h2>
+            <span className="hint">Bandeja de entrada y re-contacto de anuncios</span>
+          </div>
+          <button className="info-btn" onClick={() => setShowInfo(!showInfo)}>
+            {showInfo ? "Cerrar info" : "💡 ¿Cómo funciona esto?"}
+          </button>
         </div>
+        
+        {showInfo && (
+          <div className="info-popover" style={{ left: 0, top: "100%", marginTop: 8 }}>
+            <h4>Gestión de Leads (Prospectos)</h4>
+            <p>Este tablero te permite organizar las consultas entrantes por publicidad y hacerles seguimiento hasta que se conviertan en casos reales.</p>
+            <ul>
+              <li><strong>Primer Contacto:</strong> Leads nuevos que ingresaron y aún no respondieron.</li>
+              <li><strong>Reiterado:</strong> Leads a los que se les envió un segundo mensaje tras 24hs.</li>
+              <li><strong>Esperando Confirmación:</strong> Leads interesados que deben enviar documentación.</li>
+              <li><strong>Ingresó:</strong> Pasaron a Trámite exitosamente.</li>
+            </ul>
+            <p>💡 Tip: Usá el botón verde de WhatsApp en cada tarjeta para enviar plantillas automáticas usando tu nombre.</p>
+          </div>
+        )}
+
         <div className="view-switcher">
           <button
             className={`view-btn ${viewMode === "kanban" ? "active" : ""}`}
